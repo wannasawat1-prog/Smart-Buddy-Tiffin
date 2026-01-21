@@ -103,18 +103,36 @@
         }
 
         table { width: 100%; border-collapse: collapse; }
-        td, th { padding: 12px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
-        th { width: 30%; font-size: 0.9em; color: #555; }
+        td, th { padding: 12px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: middle; } /* ปรับเป็น middle เพื่อให้รูปอยู่กึ่งกลางบรรทัด */
+        th { width: 25%; font-size: 0.9em; color: #555; vertical-align: top; padding-top: 18px;} /* ปรับหัวข้อให้ชิดบนเหมือนเดิม */
 
-        .cal-col { width: 15%; text-align: right; font-weight: bold; color: #2e7d32; }
+        .cal-col { width: 15%; text-align: right; font-weight: bold; color: #2e7d32; vertical-align: top; padding-top: 18px;}
 
-        tr.clickable-row { cursor: pointer; }
+        /* --- ส่วนที่เพิ่มใหม่สำหรับรูปภาพวัตถุดิบ --- */
+        .ingredient-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        .ing-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 1px solid #eee;
+            flex-shrink: 0; /* ไม่ให้รูปบี้เวลาจอเล็ก */
+        }
+        /* --------------------------------------- */
+
+
+        tr.clickable-row { cursor: pointer; transition: background-color 0.2s; }
         tr.clickable-row:hover { background-color: #f0f8ff; }
         tr.speaking { background-color: #c8e6c9 !important; }
 
         .g-tag { display: inline-block; font-weight: bold; margin-bottom: 2px; font-size: 0.9em;}
-        .quantity { font-weight: 600; color: #333; background: #fff; padding: 2px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9em; display: inline-block; }
-        .tips { font-size: 0.8em; color: #888; margin-top: 2px; }
+        .quantity { font-weight: 600; color: #333; background: #fff; padding: 4px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9em; display: inline-block; }
+        .tips { font-size: 0.8em; color: #888; margin-top: 2px; line-height: 1.2; }
         .speaker-icon { float: right; font-size: 1em; opacity: 0.2; }
         tr.speaking .speaker-icon { opacity: 1; }
 
@@ -138,16 +156,20 @@
         .summary-value { font-size: 1.6em; font-weight: bold; color: #66bb6a; }
         .summary-target { font-size: 0.85em; color: #b0bec5; margin-left: 10px; }
 
+        @media (max-width: 600px) {
+            th { width: 30%; }
+            .ing-img { width: 35px; height: 35px; margin-right: 10px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="https://placehold.co/900x220/2e7d32/ffffff?text=Active+Diabetic+Plan+(Female+Voice)&font=roboto" alt="Banner" class="banner-image">
+    <img src="https://placehold.co/900x220/2e7d32/ffffff?text=Active+Diabetic+Plan+(With+Images)&font=roboto" alt="Banner" class="banner-image">
 
     <div class="content-area">
         <center>
-            <h1>🍱 ปิ่นโตคู่คิด (Smart Buddy Tiffin)</h1>
+            <h1>🍱 ปิ่นโตคุมเบาหวาน</h1>
             <div class="calorie-badge">เป้าหมาย: 1,200 - 1,800 kcal / วัน</div>
             <div style="font-size:0.8em; color:#888; margin-bottom:10px;">(แตะที่รายการอาหารเพื่อฟังเสียง)</div>
         </center>
@@ -168,31 +190,46 @@
             <table>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="150">
                     <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ไข่ต้ม <div class="tips">*ทาน 2 ฟอง ให้อิ่มนาน</div></td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/d32f2f/ffffff?text=Egg" alt="ไข่ต้ม" class="ing-img">
+                        <div>ไข่ต้ม <div class="tips">*ทาน 2 ฟอง ให้อิ่มนาน</div></div>
+                    </td>
                     <td><span class="quantity">2 ฟอง</span></td>
                     <td class="cal-col">150</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="160">
                     <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ข้าวต้มข้าวกล้อง</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/795548/ffffff?text=Rice" alt="ข้าวกล้อง" class="ing-img">
+                        <div>ข้าวต้มข้าวกล้อง</div>
+                    </td>
                     <td><span class="quantity">2 ทัพพี</span></td>
                     <td class="cal-col">160</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="30">
                     <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ผักลวก / ต้มจับฉ่าย</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/2e7d32/ffffff?text=Veg" alt="ผักลวก" class="ing-img">
+                        <div>ผักลวก / ต้มจับฉ่าย</div>
+                    </td>
                     <td><span class="quantity">2 ทัพพี</span></td>
                     <td class="cal-col">30</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="60">
-                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตา มิน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ฝรั่งกิมจู</td>
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/fbc02d/ffffff?text=Guava" alt="ฝรั่ง" class="ing-img">
+                        <div>ฝรั่งกิมจู</div>
+                    </td>
                     <td><span class="quantity">ครึ่งผล</span></td>
                     <td class="cal-col">60</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="90">
                     <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>กระเทียมเจียว / น้ำมันรำข้าว</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/0288d1/ffffff?text=Oil" alt="น้ำมัน" class="ing-img">
+                        <div>กระเทียมเจียว / น้ำมันรำข้าว</div>
+                    </td>
                     <td><span class="quantity">2 ช้อนชา</span></td>
                     <td class="cal-col">90</td>
                 </tr>
@@ -207,31 +244,46 @@
             <table>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="150">
                     <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>อกไก่ลอกหนัง / หมูไม่ติดมัน</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/d32f2f/ffffff?text=Chicken" alt="อกไก่" class="ing-img">
+                        <div>อกไก่ลอกหนัง / หมูไม่ติดมัน</div>
+                    </td>
                     <td><span class="quantity">6 ช้อนโต๊ะ</span></td>
                     <td class="cal-col">150</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="200">
                     <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ข้าวไรซ์เบอร์รี่ <div class="tips">*เพิ่มข้าวได้เล็กน้อย</div></td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/795548/ffffff?text=Riceberry" alt="ข้าวไรซ์เบอร์รี่" class="ing-img">
+                        <div>ข้าวไรซ์เบอร์รี่ <div class="tips">*เพิ่มข้าวได้เล็กน้อย</div></div>
+                    </td>
                     <td><span class="quantity">2.5 ทัพพี</span></td>
                     <td class="cal-col">200</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="40">
                     <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ผักคะน้า / บรอกโคลี (ผัด)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/2e7d32/ffffff?text=Kale" alt="คะน้า" class="ing-img">
+                        <div>ผักคะน้า / บรอกโคลี (ผัด)</div>
+                    </td>
                     <td><span class="quantity">2-3 ทัพพี</span></td>
                     <td class="cal-col">40</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="60">
-                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตา มิน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>แก้วมังกร / ส้มโอ</td>
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/fbc02d/ffffff?text=DragonFruit" alt="แก้วมังกร" class="ing-img">
+                        <div>แก้วมังกร / ส้มโอ</div>
+                    </td>
                     <td><span class="quantity">1 ส่วน</span></td>
                     <td class="cal-col">60</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="90">
                     <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>น้ำมันพืช (สำหรับผัด)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/0288d1/ffffff?text=Oil" alt="น้ำมันพืช" class="ing-img">
+                        <div>น้ำมันพืช (สำหรับผัด)</div>
+                    </td>
                     <td><span class="quantity">2 ช้อนชา</span></td>
                     <td class="cal-col">90</td>
                 </tr>
@@ -246,13 +298,19 @@
             <table>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="120">
                     <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>นมจืด / น้ำเต้าหู้ (ไม่หวาน)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/d32f2f/ffffff?text=Milk" alt="นม" class="ing-img">
+                        <div>นมจืด / น้ำเต้าหู้ (ไม่หวาน)</div>
+                    </td>
                     <td><span class="quantity">1 กล่อง/แก้ว</span></td>
                     <td class="cal-col">120</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="45">
                     <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมันดี</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ถั่วอัลมอนด์อบ (ไม่เกลือ)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/6a1b9a/ffffff?text=Almond" alt="อัลมอนด์" class="ing-img" style="border-color: #6a1b9a;">
+                        <div>ถั่วอัลมอนด์อบ (ไม่เกลือ)</div>
+                    </td>
                     <td><span class="quantity">5-6 เม็ด</span></td>
                     <td class="cal-col">45</td>
                 </tr>
@@ -267,31 +325,46 @@
             <table>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="100">
                     <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ปลาทูย่าง / กุ้งต้ม</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/d32f2f/ffffff?text=Fish" alt="ปลาทู" class="ing-img">
+                        <div>ปลาทูย่าง / กุ้งต้ม</div>
+                    </td>
                     <td><span class="quantity">4 ช้อนโต๊ะ</span></td>
                     <td class="cal-col">100</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="120">
                     <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
-                    <td>วุ้นเส้น / ข้าวกล้อง</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/795548/ffffff?text=Noodle" alt="วุ้นเส้น" class="ing-img">
+                        <div>วุ้นเส้น / ข้าวกล้อง</div>
+                    </td>
                     <td><span class="quantity">1.5 ทัพพี</span></td>
                     <td class="cal-col">120</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="35">
                     <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
-                    <td>เห็ดรวม / ผักกาดขาว (ต้ม/ยำ)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/2e7d32/ffffff?text=Mushroom" alt="เห็ด" class="ing-img">
+                        <div>เห็ดรวม / ผักกาดขาว (ต้ม/ยำ)</div>
+                    </td>
                     <td><span class="quantity">3 ทัพพี</span></td>
                     <td class="cal-col">35</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="60">
-                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตา มิน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>แอปเปิ้ลเขียว</td>
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/fbc02d/ffffff?text=Apple" alt="แอปเปิ้ล" class="ing-img">
+                        <div>แอปเปิ้ลเขียว</div>
+                    </td>
                     <td><span class="quantity">ครึ่งผล</span></td>
                     <td class="cal-col">60</td>
                 </tr>
                 <tr class="clickable-row" onclick="speak(this)" data-cal="60">
                     <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
-                    <td>ถั่วลิสงคั่ว (ในยำ)</td>
+                    <td class="ingredient-cell">
+                        <img src="https://placehold.co/45x45/0288d1/ffffff?text=Peanut" alt="ถั่วลิสง" class="ing-img">
+                        <div>ถั่วลิสงคั่ว (ในยำ)</div>
+                    </td>
                     <td><span class="quantity">1.5 ช้อนชา</span></td>
                     <td class="cal-col">60</td>
                 </tr>
@@ -308,41 +381,27 @@
 </div>
 
 <script>
-    // --- ส่วนของการจัดการเสียง ---
     let thaiFemaleVoice = null;
 
-    // โหลดรายชื่อเสียงเมื่อเปิดเว็บ
     function loadVoices() {
         const voices = window.speechSynthesis.getVoices();
-        
-        // 1. หาเสียงภาษาไทย
         const thaiVoices = voices.filter(voice => voice.lang.includes('th'));
-        
         if (thaiVoices.length > 0) {
-            // 2. พยายามหาเสียงผู้หญิง (Narisa, Kanya, Google, หรือเสียงที่มีคำว่า Female)
-            // หมายเหตุ: บน Android เสียง Google ไทยมักจะเป็นผู้หญิงอยู่แล้ว
             thaiFemaleVoice = thaiVoices.find(voice => 
                 voice.name.includes('Narisa') || 
                 voice.name.includes('Kanya') || 
                 voice.name.includes('Google') ||
                 voice.name.toLowerCase().includes('female')
             );
-
-            // ถ้าหาชื่อเฉพาะไม่เจอ ให้เอาเสียงไทยเสียงแรกที่เจอ (ส่วนใหญ่จะเป็นผู้หญิง)
-            if (!thaiFemaleVoice) {
-                thaiFemaleVoice = thaiVoices[0];
-            }
+            if (!thaiFemaleVoice) thaiFemaleVoice = thaiVoices[0];
         }
     }
 
-    // รอให้ Browser โหลดเสียงเสร็จ
     window.speechSynthesis.onvoiceschanged = loadVoices;
     
-    // --- ส่วนของการคำนวณและพูด ---
-
     window.onload = function() {
         calculateCalories();
-        loadVoices(); // เรียกโหลดเสียงอีกครั้งเพื่อความชัวร์
+        loadVoices();
     };
 
     function calculateCalories() {
@@ -370,28 +429,37 @@
     }
 
     function speak(rowElement) {
-        window.speechSynthesis.cancel(); // หยุดเสียงเก่า
+        window.speechSynthesis.cancel();
 
         let groupText = rowElement.querySelector('th').innerText.replace('🔊', '').trim();
-        let menuClone = rowElement.querySelector('td:nth-of-type(1)').cloneNode(true);
-        if(menuClone.querySelector('.tips')) menuClone.querySelector('.tips').remove();
+        
+        // คัดลอกเนื้อหาในเซลล์วัตถุดิบมา
+        let menuClone = rowElement.querySelector('td.ingredient-cell').cloneNode(true);
+        
+        // ลบรูปภาพออกก่อนจะอ่าน
+        if(menuClone.querySelector('.ing-img')) {
+            menuClone.querySelector('.ing-img').remove();
+        }
+        // ลบคำแนะนำตัวเล็กออก
+        if(menuClone.querySelector('.tips')) {
+             menuClone.querySelector('.tips').remove();
+        }
+        
         let menuText = menuClone.innerText.trim();
         let qtyText = rowElement.querySelector('.quantity').innerText.trim();
         let calText = rowElement.getAttribute('data-cal');
 
-        // ข้อความที่จะพูด
         let fullText = `${groupText} ... ${menuText} ... ปริมาณ ${qtyText} ... ให้พลังงาน ${calText} กิโลแคลอรี่`;
 
         let utterance = new SpeechSynthesisUtterance(fullText);
         utterance.lang = 'th-TH';
         
-        // บังคับใช้เสียงผู้หญิงที่เราหาไว้
         if (thaiFemaleVoice) {
             utterance.voice = thaiFemaleVoice;
         }
 
-        utterance.rate = 0.9; // พูดช้าลงนิดหน่อยให้ฟังชัด
-        utterance.pitch = 1.1; // ปรับโทนเสียงสูงขึ้นเล็กน้อย (ให้ดูเป็นผู้หญิงมากขึ้นหากเป็นเสียง Google ทั่วไป)
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1;
 
         document.querySelectorAll('.clickable-row').forEach(row => row.classList.remove('speaking'));
         rowElement.classList.add('speaking');
