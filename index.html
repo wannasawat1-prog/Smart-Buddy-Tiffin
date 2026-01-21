@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ปิ่นโตคู่คิด (Smart Buddy Tiffin)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f4f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .banner-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .content-area { padding: 20px; }
+
+        h1 { text-align: center; color: #1b5e20; margin-top: 5px; }
+        
+        .calorie-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* Visual Legend */
+        .visual-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0 25px 0;
+            gap: 15px;
+        }
+        .legend-item { display: flex; flex-direction: column; align-items: center; width: 90px; text-align: center; }
+        .legend-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; margin-bottom: 5px; }
+        .legend-label { font-size: 0.8em; font-weight: bold; }
+        
+        /* Themes */
+        .theme-1-prot { color: #d32f2f; }
+        .theme-2-carb { color: #795548; }
+        .theme-3-min  { color: #2e7d32; }
+        .theme-4-vit  { color: #f57f17; }
+        .theme-5-fat  { color: #0288d1; }
+        .theme-snack  { color: #6a1b9a; }
+
+        /* Meal Cards */
+        .meal-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+        
+        .meal-card.morning { border-left: 5px solid #ffb74d; }
+        .meal-card.noon { border-left: 5px solid #ef5350; }
+        .meal-card.snack { border-left: 5px solid #ab47bc; background-color: #fcf3ff; }
+        .meal-card.evening { border-left: 5px solid #5c6bc0; }
+
+        .meal-header {
+            background-color: #f9f9f9;
+            color: #444;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+        }
+
+        .meal-total-cal {
+            font-size: 0.9em;
+            background: #fff;
+            padding: 2px 10px;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            color: #555;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        td, th { padding: 12px; text-align: left; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+        th { width: 30%; font-size: 0.9em; color: #555; }
+
+        .cal-col { width: 15%; text-align: right; font-weight: bold; color: #2e7d32; }
+
+        tr.clickable-row { cursor: pointer; }
+        tr.clickable-row:hover { background-color: #f0f8ff; }
+        tr.speaking { background-color: #c8e6c9 !important; }
+
+        .g-tag { display: inline-block; font-weight: bold; margin-bottom: 2px; font-size: 0.9em;}
+        .quantity { font-weight: 600; color: #333; background: #fff; padding: 2px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9em; display: inline-block; }
+        .tips { font-size: 0.8em; color: #888; margin-top: 2px; }
+        .speaker-icon { float: right; font-size: 1em; opacity: 0.2; }
+        tr.speaking .speaker-icon { opacity: 1; }
+
+        /* Floating Summary Bar */
+        .total-summary-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #263238;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        
+        .summary-text { font-size: 1em; margin-right: 15px; }
+        .summary-value { font-size: 1.6em; font-weight: bold; color: #66bb6a; }
+        .summary-target { font-size: 0.85em; color: #b0bec5; margin-left: 10px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://placehold.co/900x220/2e7d32/ffffff?text=Active+Diabetic+Plan+(Female+Voice)&font=roboto" alt="Banner" class="banner-image">
+
+    <div class="content-area">
+        <center>
+            <h1>🍱 ปิ่นโตคู่คิด (Smart Buddy Tiffin)</h1>
+            <div class="calorie-badge">เป้าหมาย: 1,200 - 1,800 kcal / วัน</div>
+            <div style="font-size:0.8em; color:#888; margin-bottom:10px;">(แตะที่รายการอาหารเพื่อฟังเสียง)</div>
+        </center>
+        
+        <div class="visual-legend">
+            <div class="legend-item"><img src="https://placehold.co/50x50/d32f2f/ffffff?text=1" class="legend-img theme-1-prot"><span class="legend-label theme-1-prot">1.โปรตีน</span></div>
+            <div class="legend-item"><img src="https://placehold.co/50x50/795548/ffffff?text=2" class="legend-img theme-2-carb"><span class="legend-label theme-2-carb">2.คาร์โบฯ</span></div>
+            <div class="legend-item"><img src="https://placehold.co/50x50/2e7d32/ffffff?text=3" class="legend-img theme-3-min"><span class="legend-label theme-3-min">3.เกลือแร่</span></div>
+            <div class="legend-item"><img src="https://placehold.co/50x50/fbc02d/ffffff?text=4" class="legend-img theme-4-vit"><span class="legend-label theme-4-vit">4.วิตามิน</span></div>
+            <div class="legend-item"><img src="https://placehold.co/50x50/0288d1/ffffff?text=5" class="legend-img theme-5-fat"><span class="legend-label theme-5-fat">5.ไขมัน</span></div>
+        </div>
+
+        <div class="meal-card morning">
+            <div class="meal-header">
+                <span>🌅 มื้อเช้า (เติมพลัง)</span>
+                <span class="meal-total-cal">รวม: <span class="sum-cal">0</span> kcal</span>
+            </div>
+            <table>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="150">
+                    <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ไข่ต้ม <div class="tips">*ทาน 2 ฟอง ให้อิ่มนาน</div></td>
+                    <td><span class="quantity">2 ฟอง</span></td>
+                    <td class="cal-col">150</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="160">
+                    <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ข้าวต้มข้าวกล้อง</td>
+                    <td><span class="quantity">2 ทัพพี</span></td>
+                    <td class="cal-col">160</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="30">
+                    <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ผักลวก / ต้มจับฉ่าย</td>
+                    <td><span class="quantity">2 ทัพพี</span></td>
+                    <td class="cal-col">30</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="60">
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ฝรั่งกิมจู</td>
+                    <td><span class="quantity">ครึ่งผล</span></td>
+                    <td class="cal-col">60</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="90">
+                    <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>กระเทียมเจียว / น้ำมันรำข้าว</td>
+                    <td><span class="quantity">2 ช้อนชา</span></td>
+                    <td class="cal-col">90</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="meal-card noon">
+            <div class="meal-header">
+                <span>☀️ มื้อกลางวัน (มื้อหนัก)</span>
+                <span class="meal-total-cal">รวม: <span class="sum-cal">0</span> kcal</span>
+            </div>
+            <table>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="150">
+                    <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>อกไก่ลอกหนัง / หมูไม่ติดมัน</td>
+                    <td><span class="quantity">6 ช้อนโต๊ะ</span></td>
+                    <td class="cal-col">150</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="200">
+                    <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ข้าวไรซ์เบอร์รี่ <div class="tips">*เพิ่มข้าวได้เล็กน้อย</div></td>
+                    <td><span class="quantity">2.5 ทัพพี</span></td>
+                    <td class="cal-col">200</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="40">
+                    <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ผักคะน้า / บรอกโคลี (ผัด)</td>
+                    <td><span class="quantity">2-3 ทัพพี</span></td>
+                    <td class="cal-col">40</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="60">
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>แก้วมังกร / ส้มโอ</td>
+                    <td><span class="quantity">1 ส่วน</span></td>
+                    <td class="cal-col">60</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="90">
+                    <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>น้ำมันพืช (สำหรับผัด)</td>
+                    <td><span class="quantity">2 ช้อนชา</span></td>
+                    <td class="cal-col">90</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="meal-card snack">
+            <div class="meal-header" style="background-color: #9c27b0; color: white;">
+                <span>🍵 อาหารว่าง (บ่าย)</span>
+                <span class="meal-total-cal">รวม: <span class="sum-cal">0</span> kcal</span>
+            </div>
+            <table>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="120">
+                    <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>นมจืด / น้ำเต้าหู้ (ไม่หวาน)</td>
+                    <td><span class="quantity">1 กล่อง/แก้ว</span></td>
+                    <td class="cal-col">120</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="45">
+                    <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมันดี</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ถั่วอัลมอนด์อบ (ไม่เกลือ)</td>
+                    <td><span class="quantity">5-6 เม็ด</span></td>
+                    <td class="cal-col">45</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="meal-card evening">
+            <div class="meal-header">
+                <span>🌙 มื้อเย็น (เน้นผัก/ปลา)</span>
+                <span class="meal-total-cal">รวม: <span class="sum-cal">0</span> kcal</span>
+            </div>
+            <table>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="100">
+                    <th><span class="g-tag theme-1-prot">หมู่ 1: โปรตีน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ปลาทูย่าง / กุ้งต้ม</td>
+                    <td><span class="quantity">4 ช้อนโต๊ะ</span></td>
+                    <td class="cal-col">100</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="120">
+                    <th><span class="g-tag theme-2-carb">หมู่ 2: คาร์โบไฮเดรต</span> <span class="speaker-icon">🔊</span></th>
+                    <td>วุ้นเส้น / ข้าวกล้อง</td>
+                    <td><span class="quantity">1.5 ทัพพี</span></td>
+                    <td class="cal-col">120</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="35">
+                    <th><span class="g-tag theme-3-min">หมู่ 3: เกลือแร่</span> <span class="speaker-icon">🔊</span></th>
+                    <td>เห็ดรวม / ผักกาดขาว (ต้ม/ยำ)</td>
+                    <td><span class="quantity">3 ทัพพี</span></td>
+                    <td class="cal-col">35</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="60">
+                    <th><span class="g-tag theme-4-vit">หมู่ 4: วิตามิน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>แอปเปิ้ลเขียว</td>
+                    <td><span class="quantity">ครึ่งผล</span></td>
+                    <td class="cal-col">60</td>
+                </tr>
+                <tr class="clickable-row" onclick="speak(this)" data-cal="60">
+                    <th><span class="g-tag theme-5-fat">หมู่ 5: ไขมัน</span> <span class="speaker-icon">🔊</span></th>
+                    <td>ถั่วลิสงคั่ว (ในยำ)</td>
+                    <td><span class="quantity">1.5 ช้อนชา</span></td>
+                    <td class="cal-col">60</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="total-summary-bar">
+    <span class="summary-text">พลังงานรวมวันนี้:</span>
+    <span class="summary-value" id="grand-total">0</span>
+    <span class="summary-unit"> kcal</span>
+    <span class="summary-target">(เป้าหมาย: 1200-1800)</span>
+</div>
+
+<script>
+    // --- ส่วนของการจัดการเสียง ---
+    let thaiFemaleVoice = null;
+
+    // โหลดรายชื่อเสียงเมื่อเปิดเว็บ
+    function loadVoices() {
+        const voices = window.speechSynthesis.getVoices();
+        
+        // 1. หาเสียงภาษาไทย
+        const thaiVoices = voices.filter(voice => voice.lang.includes('th'));
+        
+        if (thaiVoices.length > 0) {
+            // 2. พยายามหาเสียงผู้หญิง (Narisa, Kanya, Google, หรือเสียงที่มีคำว่า Female)
+            // หมายเหตุ: บน Android เสียง Google ไทยมักจะเป็นผู้หญิงอยู่แล้ว
+            thaiFemaleVoice = thaiVoices.find(voice => 
+                voice.name.includes('Narisa') || 
+                voice.name.includes('Kanya') || 
+                voice.name.includes('Google') ||
+                voice.name.toLowerCase().includes('female')
+            );
+
+            // ถ้าหาชื่อเฉพาะไม่เจอ ให้เอาเสียงไทยเสียงแรกที่เจอ (ส่วนใหญ่จะเป็นผู้หญิง)
+            if (!thaiFemaleVoice) {
+                thaiFemaleVoice = thaiVoices[0];
+            }
+        }
+    }
+
+    // รอให้ Browser โหลดเสียงเสร็จ
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    
+    // --- ส่วนของการคำนวณและพูด ---
+
+    window.onload = function() {
+        calculateCalories();
+        loadVoices(); // เรียกโหลดเสียงอีกครั้งเพื่อความชัวร์
+    };
+
+    function calculateCalories() {
+        let grandTotal = 0;
+        document.querySelectorAll('.meal-card').forEach(card => {
+            let mealTotal = 0;
+            card.querySelectorAll('tr[data-cal]').forEach(row => {
+                let cal = parseInt(row.getAttribute('data-cal'));
+                if (!isNaN(cal)) mealTotal += cal;
+            });
+            card.querySelector('.sum-cal').innerText = mealTotal;
+            grandTotal += mealTotal;
+        });
+
+        let totalElement = document.getElementById('grand-total');
+        totalElement.innerText = grandTotal;
+        
+        if(grandTotal >= 1200 && grandTotal <= 1800) {
+            totalElement.style.color = "#66bb6a"; 
+        } else if (grandTotal < 1200) {
+            totalElement.style.color = "#ffa726"; 
+        } else {
+            totalElement.style.color = "#ef5350"; 
+        }
+    }
+
+    function speak(rowElement) {
+        window.speechSynthesis.cancel(); // หยุดเสียงเก่า
+
+        let groupText = rowElement.querySelector('th').innerText.replace('🔊', '').trim();
+        let menuClone = rowElement.querySelector('td:nth-of-type(1)').cloneNode(true);
+        if(menuClone.querySelector('.tips')) menuClone.querySelector('.tips').remove();
+        let menuText = menuClone.innerText.trim();
+        let qtyText = rowElement.querySelector('.quantity').innerText.trim();
+        let calText = rowElement.getAttribute('data-cal');
+
+        // ข้อความที่จะพูด
+        let fullText = `${groupText} ... ${menuText} ... ปริมาณ ${qtyText} ... ให้พลังงาน ${calText} กิโลแคลอรี่`;
+
+        let utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = 'th-TH';
+        
+        // บังคับใช้เสียงผู้หญิงที่เราหาไว้
+        if (thaiFemaleVoice) {
+            utterance.voice = thaiFemaleVoice;
+        }
+
+        utterance.rate = 0.9; // พูดช้าลงนิดหน่อยให้ฟังชัด
+        utterance.pitch = 1.1; // ปรับโทนเสียงสูงขึ้นเล็กน้อย (ให้ดูเป็นผู้หญิงมากขึ้นหากเป็นเสียง Google ทั่วไป)
+
+        document.querySelectorAll('.clickable-row').forEach(row => row.classList.remove('speaking'));
+        rowElement.classList.add('speaking');
+
+        utterance.onend = function() {
+            rowElement.classList.remove('speaking');
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+</script>
+
+</body>
+</html>
