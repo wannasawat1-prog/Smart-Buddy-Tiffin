@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ปิ่นโตคู่คิด (Smart Buddy Tiffin)</title>
+    <title>ปิ่นโตคู่คิด (smart Buddy Tiffin)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap');
 
@@ -95,7 +95,6 @@
         }
         input.menu-input:focus { border-color: #4CAF50; box-shadow: 0 0 5px rgba(76,175,80,0.2); }
 
-        /* ปุ่มค้นหา */
         button.search-btn {
             background: #2e7d32;
             color: white;
@@ -107,7 +106,6 @@
             font-size: 1.1em;
         }
         
-        /* ปุ่มไมค์ */
         button.mic-btn {
             background: #ffffff;
             color: #555;
@@ -131,7 +129,6 @@
             100% { transform: scale(1); }
         }
 
-
         .auto-read-btn {
             background-color: #4CAF50;
             color: white;
@@ -149,12 +146,6 @@
         }
         .auto-read-btn:hover { background-color: #388e3c; }
         .auto-read-btn.playing { background-color: #e53935; animation: pulse 1.5s infinite; }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
-        }
 
         .meal-cal-badge {
             background: #fff;
@@ -175,11 +166,7 @@
         .ing-img { width: 48px; height: 48px; border-radius: 8px; margin-right: 15px; border: 1px solid #eee; object-fit: cover;}
         
         .g-tag { display: inline-block; font-weight: bold; margin-bottom: 4px; font-size: 0.85em; padding: 2px 8px; border-radius: 4px; color: white;}
-        .bg-p { background-color: #d32f2f; } 
-        .bg-c { background-color: #795548; }
-        .bg-m { background-color: #2e7d32; } 
-        .bg-v { background-color: #f57f17; } 
-        .bg-f { background-color: #0288d1; }
+        .bg-p { background-color: #d32f2f; } .bg-c { background-color: #795548; } .bg-m { background-color: #2e7d32; } .bg-v { background-color: #f57f17; } .bg-f { background-color: #0288d1; }
 
         .quantity { font-weight: 600; color: #333; background: #fff; padding: 4px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.9em; }
 
@@ -216,14 +203,13 @@
     
     <div class="content-area">
         <center>
-            <h1>🍱 ปิ่นโตคู่คิด (Smart Buddy Tiffin)</h1>
+            <h1>🍱ปิ่นโตคู่คิด (smart Buddy Tiffin)</h1>
             <div class="instruction">
-                พิมพ์ชื่อเมนู หรือกดปุ่ม <b>"🎤"</b> แล้วพูดชื่ออาหารได้เลย (เช่น "ข้าวมันไก่", "แกงส้ม")
+                พิมพ์ชื่อเมนู หรือกด <b>"🎤"</b> แล้วพูด... ระบบจะอ่านข้อมูลให้ฟังทันทีที่ได้เมนู
             </div>
         </center>
 
         <div id="meal-sections-container"></div>
-
     </div>
 </div>
 
@@ -233,16 +219,13 @@
 </div>
 
 <script>
-    // --- 1. ฐานข้อมูลเมนูอาหาร 100+ เมนู (Recipes) ---
+    // --- 1. ฐานข้อมูลเมนูอาหาร 100+ เมนู ---
     const recipes = {
-        // === กลุ่มข้าวต้ม/โจ๊ก ===
         "ข้าวต้มปลา": [ {group:1,name:"เนื้อปลาลวก",qty:"3 ชต.",cal:75,img:"Fish"}, {group:2,name:"ข้าวกล้องต้ม",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ขึ้นฉ่าย/ผักกาด",qty:"1 ถ้วย",cal:15,img:"Veg"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "ข้าวต้มหมู": [ {group:1,name:"หมูสับไร้มัน",qty:"3 ชต.",cal:90,img:"Pork"}, {group:2,name:"ข้าวกล้องต้ม",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ตำลึง",qty:"1 ถ้วย",cal:15,img:"VegGreen"}, {group:4,name:"ส้มโอ",qty:"1 กลีบ",cal:60,img:"Pomelo"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "ข้าวต้มกุ้ง": [ {group:1,name:"กุ้งสด",qty:"4-5 ตัว",cal:80,img:"Shrimp"}, {group:2,name:"ข้าวกล้องต้ม",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ผักชี/ต้นหอม",qty:"เล็กน้อย",cal:5,img:"Veg"}, {group:4,name:"มะละกอ",qty:"6 ชิ้น",cal:60,img:"Papaya"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "โจ๊กหมูใส่ไข่": [ {group:1,name:"หมูสับ+ไข่ลวก",qty:"3ชต.+1ฟอง",cal:160,img:"Egg"}, {group:2,name:"ปลายข้าวกล้อง",qty:"1.5 ทัพพี",cal:120,img:"Rice"}, {group:3,name:"ขิง/ต้นหอม",qty:"ตามชอบ",cal:10,img:"Veg"}, {group:4,name:"แก้วมังกร",qty:"6 ชิ้น",cal:60,img:"DragonFruit"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "ต้มเลือดหมู+ข้าว": [ {group:1,name:"เลือดหมู/หมูสับ",qty:"1ถ้วย",cal:120,img:"Pork"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ตำลึง/จิงจูฉ่าย",qty:"2 ทัพพี",cal:20,img:"VegGreen"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
-
-        // === กลุ่มอาหารจานเดียว ===
         "ข้าวกะเพราไก่": [ {group:1,name:"อกไก่ลอกหนัง",qty:"1 ขีด",cal:120,img:"Chicken"}, {group:2,name:"ข้าวกล้อง",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"กะเพรา/ถั่วฝักยาว",qty:"1 ถ้วย",cal:25,img:"Basil"}, {group:4,name:"แก้วมังกร",qty:"8 ชิ้น",cal:60,img:"DragonFruit"}, {group:5,name:"น้ำมันรำข้าว",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "ข้าวกะเพราหมู": [ {group:1,name:"หมูสับมันน้อย",qty:"1 ขีด",cal:150,img:"Pork"}, {group:2,name:"ข้าวกล้อง",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"กะเพรา/ถั่วฝักยาว",qty:"1 ถ้วย",cal:25,img:"Basil"}, {group:4,name:"แอปเปิ้ล",qty:"ครึ่งผล",cal:60,img:"Apple"}, {group:5,name:"น้ำมันรำข้าว",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "ข้าวกะเพราทะเล": [ {group:1,name:"กุ้ง/หมึก",qty:"1 ขีด",cal:100,img:"Shrimp"}, {group:2,name:"ข้าวกล้อง",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"กะเพรา/หน่อไม้",qty:"1 ถ้วย",cal:25,img:"Basil"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"น้ำมันรำข้าว",qty:"2 ชช.",cal:90,img:"Oil"} ],
@@ -261,8 +244,6 @@
         "ข้าวราดผัดผักรวม": [ {group:1,name:"กุ้ง/อกไก่",qty:"3 ช้อนโต๊ะ",cal:80,img:"Shrimp"}, {group:2,name:"ข้าวกล้อง",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ผักรวม(คะน้า/แครอท)",qty:"3 ทัพพี",cal:40,img:"VegMix"}, {group:4,name:"ส้มโอ",qty:"1 กลีบ",cal:60,img:"Pomelo"}, {group:5,name:"น้ำมันพืช",qty:"1.5 ชช.",cal:70,img:"Oil"} ],
         "ข้าวราดผัดพริกแกง": [ {group:1,name:"หมู/ไก่",qty:"1 ขีด",cal:140,img:"Pork"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ถั่วฝักยาว",qty:"1 ถ้วย",cal:25,img:"VegGreen"}, {group:4,name:"แอปเปิ้ล",qty:"ครึ่งผล",cal:60,img:"Apple"}, {group:5,name:"น้ำมัน/พริกแกง",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "ข้าวราดผัดขิง": [ {group:1,name:"ไก่/หมู",qty:"1 ขีด",cal:120,img:"Chicken"}, {group:2,name:"ข้าวกล้อง",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ขิงซอย/เห็ดหูหนู",qty:"1.5 ถ้วย",cal:30,img:"Mushroom"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"น้ำมันพืช",qty:"1.5 ชช.",cal:70,img:"Oil"} ],
-
-        // === กลุ่มเส้น (Noodles) ===
         "ก๋วยเตี๋ยวน้ำใส": [ {group:1,name:"ลูกชิ้น/หมูชิ้น",qty:"1 ขีด",cal:100,img:"Pork"}, {group:2,name:"เส้นหมี่/เส้นเล็ก",qty:"1 ก้อน",cal:150,img:"Noodle"}, {group:3,name:"ถั่วงอก/ผักบุ้ง",qty:"2 กำมือ",cal:20,img:"BeanSprout"}, {group:4,name:"แก้วมังกร",qty:"8 ชิ้น",cal:60,img:"DragonFruit"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "ก๋วยเตี๋ยวต้มยำ": [ {group:1,name:"หมูสับ/ลูกชิ้น",qty:"1 ขีด",cal:120,img:"Pork"}, {group:2,name:"เส้นเล็ก/บะหมี่",qty:"1 ก้อน",cal:150,img:"Noodle"}, {group:3,name:"ถั่วงอก/ผักชี",qty:"2 กำมือ",cal:20,img:"BeanSprout"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"ถั่วลิสง/น้ำพริกเผา",qty:"1 ชช.",cal:60,img:"Peanut"} ],
         "ก๋วยเตี๋ยวไก่มะระ": [ {group:1,name:"น่องไก่/เลือด",qty:"1 น่อง",cal:140,img:"Chicken"}, {group:2,name:"เส้นหมี่/เส้นเล็ก",qty:"1 ก้อน",cal:150,img:"Noodle"}, {group:3,name:"มะระ/ถั่วงอก",qty:"2 ถ้วย",cal:30,img:"VegGreen"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
@@ -280,8 +261,6 @@
         "สุกี้แห้ง": [ {group:1,name:"เนื้อสัตว์/ไข่",qty:"4 ช้อนโต๊ะ",cal:130,img:"Chicken"}, {group:2,name:"วุ้นเส้น",qty:"1 กำมือ",cal:80,img:"GlassNoodle"}, {group:3,name:"ผักบุ้ง/ผักกาด",qty:"2 ถ้วย",cal:30,img:"VegGreen"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"น้ำมันผัด",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "ก๋วยเตี๋ยวคั่วไก่": [ {group:1,name:"เนื้อไก่/ไข่",qty:"1 ขีด",cal:140,img:"Chicken"}, {group:2,name:"เส้นใหญ่",qty:"1 ทัพพี",cal:150,img:"Noodle"}, {group:3,name:"ผักกาดหอม",qty:"1 ถ้วย",cal:15,img:"VegGreen"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"น้ำมันผัด",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "มักกะโรนีซุปไก่": [ {group:1,name:"เนื้อไก่",qty:"3 ช้อนโต๊ะ",cal:90,img:"Chicken"}, {group:2,name:"มักกะโรนีต้ม",qty:"1.5 ทัพพี",cal:150,img:"Noodle"}, {group:3,name:"หอมใหญ่/แครอท",qty:"1 ถ้วย",cal:30,img:"Carrot"}, {group:4,name:"ส้มโอ",qty:"1 กลีบ",cal:60,img:"Pomelo"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
-
-        // === กับข้าว/แกง/ซุป ===
         "แกงจืดเต้าหู้หมูสับ": [ {group:1,name:"หมูสับ/เต้าหู้",qty:"1ขีด",cal:120,img:"Tofu"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ผักกาดขาว",qty:"1 ถ้วย",cal:20,img:"Veg"}, {group:4,name:"มะละกอ",qty:"6 ชิ้น",cal:60,img:"Papaya"}, {group:5,name:"กระเทียมเจียว",qty:"1 ชช.",cal:45,img:"Garlic"} ],
         "แกงส้มผักรวม": [ {group:1,name:"เนื้อปลา/กุ้ง",qty:"3 ช้อนโต๊ะ",cal:80,img:"Fish"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ผักรวม/ดอกแค",qty:"2 ทัพพี",cal:40,img:"VegMix"}, {group:4,name:"แตงโม",qty:"6 ชิ้น",cal:50,img:"Watermelon"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
         "แกงเลียงกุ้งสด": [ {group:1,name:"กุ้งสด",qty:"4-5 ตัว",cal:80,img:"Shrimp"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"บวบ/ฟักทอง",qty:"2 ถ้วย",cal:50,img:"Pumpkin"}, {group:4,name:"แอปเปิ้ล",qty:"ครึ่งผล",cal:60,img:"Apple"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
@@ -308,10 +287,8 @@
         "ผัดเปรี้ยวหวาน": [ {group:1,name:"หมู/ไก่",qty:"1 ขีด",cal:120,img:"Pork"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"แตงกวา/หอมใหญ่",qty:"1.5 ถ้วย",cal:30,img:"VegMix"}, {group:4,name:"(สับปะรดในผัด)",qty:"พอประมาณ",cal:40,img:"Pineapple"}, {group:5,name:"น้ำมันพืช",qty:"1.5 ชช.",cal:70,img:"Oil"} ],
         "ผัดฟักทองใส่ไข่": [ {group:1,name:"ไข่ไก่",qty:"1-2 ฟอง",cal:120,img:"Egg"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"ฟักทอง",qty:"1 ถ้วยพูน",cal:60,img:"Pumpkin"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"น้ำมันพืช",qty:"1.5 ชช.",cal:70,img:"Oil"} ],
         "ผัดบวบใส่ไข่": [ {group:1,name:"ไข่ไก่",qty:"1-2 ฟอง",cal:120,img:"Egg"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"บวบเหลี่ยม",qty:"1.5 ถ้วย",cal:30,img:"VegGreen"}, {group:4,name:"แก้วมังกร",qty:"8 ชิ้น",cal:60,img:"DragonFruit"}, {group:5,name:"น้ำมันพืช",qty:"1.5 ชช.",cal:70,img:"Oil"} ],
-
-        // === ยำ/ส้มตำ ===
         "ส้มตำไทย": [ {group:1,name:"กุ้งแห้ง",qty:"2 ช้อนโต๊ะ",cal:50,img:"Shrimp"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"มะละกอ/ถั่วฝักยาว",qty:"1 จาน",cal:40,img:"PapayaGreen"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"ถั่วลิสง",qty:"1 ช้อนโต๊ะ",cal:45,img:"Peanut"} ],
-        "ส้มตำปู": [ {group:1,name:"ปูเค็ม",qty:"1 ตัว",cal:30,img:"Crab"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"มะละกอ",qty:"1 จาน",cal:40,img:"PapayaGreen"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
+        "ส้มตำปู": [ {group:1,name:"ปูเค็ม",qty:"1 ตัว",cal:30,img:"Crab"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"มะละกอ/มะเขือเทศ",qty:"1 จาน",cal:40,img:"PapayaGreen"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
         "ลาบหมู": [ {group:1,name:"หมูสับรวน",qty:"1 ขีด",cal:150,img:"Pork"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"ผักสด",qty:"1 จาน",cal:20,img:"VegMix"}, {group:4,name:"แตงโม",qty:"6 ชิ้น",cal:50,img:"Watermelon"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
         "ลาบไก่": [ {group:1,name:"ไก่สับรวน",qty:"1 ขีด",cal:120,img:"Chicken"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"ผักสด",qty:"1 จาน",cal:20,img:"VegMix"}, {group:4,name:"สับปะรด",qty:"6 ชิ้น",cal:60,img:"Pineapple"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
         "น้ำตกหมู": [ {group:1,name:"หมูย่างมันน้อย",qty:"1 ขีด",cal:180,img:"Pork"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"ผักสด",qty:"1 จาน",cal:20,img:"VegMix"}, {group:4,name:"แอปเปิ้ล",qty:"ครึ่งผล",cal:60,img:"Apple"}, {group:5,name:"-",qty:"-",cal:0,img:"None"} ],
@@ -320,8 +297,6 @@
         "ยำไข่ดาว": [ {group:1,name:"ไข่ดาว",qty:"2 ฟอง",cal:160,img:"Egg"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"หอมใหญ่/ขึ้นฉ่าย",qty:"1 ถ้วย",cal:20,img:"Veg"}, {group:4,name:"ส้มโอ",qty:"1 กลีบ",cal:60,img:"Pomelo"}, {group:5,name:"น้ำมันทอดไข่",qty:"2 ชช.",cal:90,img:"Oil"} ],
         "ยำปลาดุกฟู": [ {group:1,name:"เนื้อปลาดุก",qty:"3 ช้อนโต๊ะ",cal:150,img:"Fish"}, {group:2,name:"ข้าวสวย",qty:"2 ทัพพี",cal:160,img:"Rice"}, {group:3,name:"มะม่วงเปรี้ยว",qty:"1 ถ้วย",cal:30,img:"Mango"}, {group:4,name:"ชมพู่",qty:"2 ผล",cal:60,img:"RoseApple"}, {group:5,name:"ถั่วลิสง",qty:"1 ช้อนโต๊ะ",cal:45,img:"Peanut"} ],
         "ซุปหน่อไม้": [ {group:1,name:"-",qty:"-",cal:0,img:"None"}, {group:2,name:"ข้าวเหนียว",qty:"ครึ่งห่อ",cal:80,img:"StickyRice"}, {group:3,name:"หน่อไม้ขูด",qty:"1 จาน",cal:40,img:"VegGreen"}, {group:4,name:"ฝรั่ง",qty:"ครึ่งผล",cal:60,img:"Guava"}, {group:5,name:"งาขาว",qty:"1 ช้อนชา",cal:20,img:"Sesame"} ],
-
-        // === อาหารเช้า/ฝรั่ง/ของว่าง ===
         "แซนด์วิชทูน่า": [ {group:1,name:"ทูน่า",qty:"3 ช้อนโต๊ะ",cal:60,img:"Tuna"}, {group:2,name:"ขนมปังโฮลวีต",qty:"2 แผ่น",cal:160,img:"Bread"}, {group:3,name:"ผักสลัด",qty:"ตามชอบ",cal:15,img:"Salad"}, {group:4,name:"แอปเปิ้ล",qty:"1 ผลเล็ก",cal:60,img:"Apple"}, {group:5,name:"มายองเนส",qty:"1 ชช.",cal:45,img:"Mayo"} ],
         "แซนด์วิชไข่": [ {group:1,name:"ไข่ต้ม",qty:"1-2 ฟอง",cal:100,img:"Egg"}, {group:2,name:"ขนมปังโฮลวีต",qty:"2 แผ่น",cal:160,img:"Bread"}, {group:3,name:"มะเขือเทศ",qty:"ตามชอบ",cal:15,img:"Salad"}, {group:4,name:"ส้มโอ",qty:"1 กลีบ",cal:60,img:"Pomelo"}, {group:5,name:"มายองเนส",qty:"1 ชช.",cal:45,img:"Mayo"} ],
         "สลัดอกไก่": [ {group:1,name:"อกไก่+ไข่",qty:"1 ขีด+1 ฟอง",cal:200,img:"Chicken"}, {group:2,name:"ข้าวโพด",qty:"เล็กน้อย",cal:50,img:"Corn"}, {group:3,name:"ผักสลัด",qty:"1 ชามใหญ่",cal:30,img:"Salad"}, {group:4,name:"กล้วยหอม",qty:"ครึ่งผล",cal:60,img:"Banana"}, {group:5,name:"น้ำสลัด",qty:"1 ช้อนโต๊ะ",cal:60,img:"Oil"} ],
@@ -347,6 +322,7 @@
         document.getElementById('input-snack').value = "ชุดผลไม้รวม";
         document.getElementById('input-evening').value = "แกงจืดเต้าหู้หมูสับ";
         
+        // Render initial but DO NOT auto speak on load
         renderAllMeals();
         loadVoices();
     };
@@ -376,9 +352,9 @@
                         <div class="header-left">
                             <div class="meal-title">${sec.title}</div>
                             <div class="input-group">
-                                <input type="text" id="input-${sec.id}" class="menu-input" list="menu-list" placeholder="พิมพ์ชื่อเมนู..." onchange="processMenu('${sec.id}')">
+                                <input type="text" id="input-${sec.id}" class="menu-input" list="menu-list" placeholder="พิมพ์ชื่อเมนู..." onchange="processMenu('${sec.id}', true)">
                                 <button class="mic-btn" id="btn-mic-${sec.id}" onclick="startListening('${sec.id}')">🎤</button>
-                                <button class="search-btn" onclick="processMenu('${sec.id}')">🔍</button>
+                                <button class="search-btn" onclick="processMenu('${sec.id}', true)">🔍</button>
                             </div>
                         </div>
                         <div style="display: flex; gap:10px; align-items: center; justify-content: space-between;">
@@ -393,7 +369,7 @@
         });
     }
 
-    // --- Voice Recognition Logic (Microphone) ---
+    // --- Voice Recognition Logic ---
     function startListening(mealId) {
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
             alert("เบราว์เซอร์นี้ไม่รองรับการสั่งงานด้วยเสียง (แนะนำ Google Chrome)");
@@ -402,7 +378,7 @@
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.lang = 'th-TH'; // ภาษาไทย
+        recognition.lang = 'th-TH';
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
@@ -413,28 +389,21 @@
 
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            // ใส่ข้อความลงใน input
             const inputField = document.getElementById(`input-${mealId}`);
             inputField.value = transcript;
             
-            // ค้นหาเมนูทันที
-            processMenu(mealId);
+            // Auto Speak is TRUE because it came from voice interaction
+            processMenu(mealId, true);
             
             btn.classList.remove('listening');
         };
 
-        recognition.onend = () => {
-            btn.classList.remove('listening');
-        };
-
-        recognition.onerror = (event) => {
-            console.error(event.error);
-            btn.classList.remove('listening');
-        };
+        recognition.onend = () => { btn.classList.remove('listening'); };
+        recognition.onerror = (event) => { console.error(event.error); btn.classList.remove('listening'); };
     }
 
-    // --- Processing Logic ---
-    function processMenu(mealType) {
+    // --- Processing Logic with Auto-Speak Trigger ---
+    function processMenu(mealType, autoSpeak = false) {
         let input = document.getElementById(`input-${mealType}`).value.trim();
         let ingredients = [];
         
@@ -443,7 +412,6 @@
         if (foundKey && input !== "") {
             ingredients = recipes[foundKey];
         } else {
-            // Default Set
             ingredients = [
                 { group: 1, name: "เนื้อสัตว์ไขมันต่ำ", qty: "3-4 ชต.", cal: 100, img: "Meat" },
                 { group: 2, name: "ข้าวกล้อง/แป้ง", qty: "2 ทัพพี", cal: 160, img: "Rice" },
@@ -453,6 +421,14 @@
             ];
         }
         renderTable(mealType, ingredients);
+
+        // *** Auto Speak Logic ***
+        if (autoSpeak) {
+            // Wait slightly for UI update then speak
+            setTimeout(() => {
+                readEntireMeal(mealType);
+            }, 500);
+        }
     }
 
     function renderTable(mealType, ingredients) {
@@ -493,7 +469,11 @@
     }
 
     function renderAllMeals() {
-        processMenu('morning'); processMenu('noon'); processMenu('snack'); processMenu('evening');
+        // Initial load does NOT auto speak
+        processMenu('morning', false); 
+        processMenu('noon', false); 
+        processMenu('snack', false); 
+        processMenu('evening', false);
     }
 
     function updateGrandTotal() {
@@ -541,6 +521,7 @@
     }
 
     function readEntireMeal(mealType) {
+        // If clicking button manually while reading -> stop
         if (currentSpeakingMeal === mealType) {
             stopReading();
             return;
